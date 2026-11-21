@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Sitemap for SUDHVI TECH
+  NOTE: Production domain is pending client confirmation.
+  Replace 'https://[CONFIRMED_DOMAIN_PENDING]' with the confirmed production domain prior to deployment.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Core Static Pages -->
+  <url>
+    <loc>https://[CONFIRMED_DOMAIN_PENDING]/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://[CONFIRMED_DOMAIN_PENDING]/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://[CONFIRMED_DOMAIN_PENDING]/courses</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://[CONFIRMED_DOMAIN_PENDING]/projects</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://[CONFIRMED_DOMAIN_PENDING]/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://[CONFIRMED_DOMAIN_PENDING]/enroll</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://[CONFIRMED_DOMAIN_PENDING]/privacy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://[CONFIRMED_DOMAIN_PENDING]/terms</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <!-- Technical Courses Detail Pages -->
+  <url>
+    <loc>https://[CONFIRMED_DOMAIN_PENDING]/courses/ai-machine-learning</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://[CONFIRMED_DOMAIN_PENDING]/courses/generative-ai</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://[CONFIRMED_DOMAIN_PENDING]/courses/agentic-ai</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://[CONFIRMED_DOMAIN_PENDING]/courses/prompt-engineering</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://[CONFIRMED_DOMAIN_PENDING]/courses/python-programming</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://[CONFIRMED_DOMAIN_PENDING]/courses/java-full-stack</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://[CONFIRMED_DOMAIN_PENDING]/courses/software-testing</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://[CONFIRMED_DOMAIN_PENDING]/courses/data-analytics</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>

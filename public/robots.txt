@@ -1,0 +1,6 @@
+# robots.txt for SUDHVI TECH
+User-agent: *
+Allow: /
+
+# NOTE: Update with confirmed production domain upon deployment
+Sitemap: https://[CONFIRMED_DOMAIN_PENDING]/sitemap.xml
