@@ -81,6 +81,7 @@ export default function Contact() {
     register,
     handleSubmit,
     setValue,
+    getValues,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<ContactFormData>({
@@ -109,6 +110,43 @@ export default function Contact() {
       return;
     }
 
+    // Detect if running in local development or preview server
+    const isDev =
+      typeof window !== 'undefined' &&
+      (window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1' ||
+        window.location.hostname === '::1' ||
+        window.location.hostname.endsWith('.local') ||
+        window.location.hostname.startsWith('192.168.') ||
+        window.location.hostname.startsWith('10.') ||
+        window.location.hostname.startsWith('172.') ||
+        window.location.port !== '');
+
+    // Optional direct Google Sheet & Email Webhook Sync (triggers row append + instant email to ksudheerbasha@gmail.com)
+    const googleSheetUrl = import.meta.env.VITE_GOOGLE_SHEET_URL;
+    if (googleSheetUrl) {
+      try {
+        await fetch(googleSheetUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            formName: 'contact',
+            timestamp: new Date().toISOString(),
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            userType: data.userType,
+            subject: data.subject,
+            programInterest: data.programInterest || 'General Inquiry',
+            message: data.message,
+          }),
+        });
+      } catch (sheetErr) {
+        console.warn('Google Sheet sync note:', sheetErr);
+      }
+    }
+
     try {
       // Real form submission via Netlify Forms endpoint
       const response = await fetch('/', {
@@ -132,8 +170,8 @@ export default function Contact() {
         setSubmitted(true);
         reset();
       } else {
-        // If not running on Netlify (e.g., local development server or preview)
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        // In local development server (Vite doesn't handle POST / natively)
+        if (isDev) {
           setIsLiveCaptured(false);
           setSubmitted(true);
           reset();
@@ -143,7 +181,7 @@ export default function Contact() {
       }
     } catch (err: unknown) {
       // In local dev without live Netlify backend, acknowledge client-side validation success
-      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      if (isDev) {
         setIsLiveCaptured(false);
         setSubmitted(true);
         reset();
@@ -196,13 +234,33 @@ export default function Contact() {
                 id="contact-main-heading"
               />
 
-              {/* Submission Error Banner */}
+              {/* Submission Error Banner with Instant Direct-Action Fallbacks */}
               {submissionError && (
-                <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-2xl text-xs sm:text-sm text-red-800 font-body flex items-start gap-3">
-                  <span className="text-base shrink-0">⚠️</span>
-                  <div>
-                    <p className="font-semibold font-heading mb-0.5">Transmission Failure</p>
-                    <p>{submissionError}</p>
+                <div className="mt-6 p-4 sm:p-5 bg-red-50 border border-red-200 rounded-2xl text-xs sm:text-sm text-red-900 font-body space-y-3">
+                  <div className="flex items-start gap-3">
+                    <span className="text-xl shrink-0" aria-hidden="true">⚠️</span>
+                    <div>
+                      <p className="font-semibold font-heading text-red-950 mb-0.5">Transmission Failure</p>
+                      <p className="text-red-800 leading-relaxed">{submissionError}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-red-200/60">
+                    <a
+                      href={`https://wa.me/917093642973?text=${encodeURIComponent(
+                        `Hi SUDHVI TECH, I would like to submit an inquiry:\nName: ${getValues('name') || 'Student'}\nEmail: ${getValues('email') || 'N/A'}\nPhone: ${getValues('phone') || 'N/A'}\nSubject: ${getValues('subject') || 'General'}\nMessage: ${getValues('message') || 'Please contact me.'}`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium text-xs transition-colors shadow-sm"
+                    >
+                      <span>💬 Send Directly on WhatsApp (+91 7093642973)</span>
+                    </a>
+                    <a
+                      href="tel:+917093642973"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-800 rounded-xl font-medium text-xs transition-colors shadow-sm"
+                    >
+                      <span>📞 Call 7093642973</span>
+                    </a>
                   </div>
                 </div>
               )}

@@ -63,7 +63,8 @@
   </head>
   <body>
     <!-- Netlify form detection bots (SPA deployment compatibility) -->
-    <form name="contact" netlify netlify-honeypot="botField" hidden>
+    <form name="contact" method="POST" data-netlify="true" netlify-honeypot="botField" hidden>
+      <input type="hidden" name="form-name" value="contact" />
       <input type="text" name="name" />
       <input type="email" name="email" />
       <input type="tel" name="phone" />
@@ -73,7 +74,8 @@
       <textarea name="message"></textarea>
       <input type="text" name="botField" />
     </form>
-    <form name="enrollment" netlify netlify-honeypot="botField" hidden>
+    <form name="enrollment" method="POST" data-netlify="true" netlify-honeypot="botField" hidden>
+      <input type="hidden" name="form-name" value="enrollment" />
       <input type="text" name="fullName" />
       <input type="email" name="email" />
       <input type="tel" name="phone" />

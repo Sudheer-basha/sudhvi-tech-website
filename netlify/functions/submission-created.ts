@@ -221,12 +221,12 @@ export const handler: Handler = async (event) => {
     }
 
     // ─────────────────────────────────────────────────────────────
-    // 3. Optional Webhook Forwarding (Zapier / Make / n8n / CRM)
+    // 3. Optional Webhook Forwarding (Google Sheet / Excel / Zapier / Make / CRM)
     // ─────────────────────────────────────────────────────────────
-    const webhookUrl = process.env.ENROLLMENT_WEBHOOK_URL;
+    const webhookUrl = process.env.GOOGLE_SHEET_URL || process.env.ENROLLMENT_WEBHOOK_URL;
     if (webhookUrl) {
       try {
-        console.log(`[Webhook] Forwarding payload to external webhook: ${webhookUrl}`);
+        console.log(`[Google Sheet / Webhook] Forwarding payload to: ${webhookUrl}`);
         await fetch(webhookUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -234,12 +234,14 @@ export const handler: Handler = async (event) => {
             event: 'form_submission',
             formName,
             timestamp,
+            // Flatten data so Google Apps Script can read either directly or under data
+            ...data,
             data,
           }),
         });
-        console.log('[Webhook] Forwarded successfully.');
+        console.log('[Google Sheet / Webhook] Forwarded successfully.');
       } catch (webhookErr) {
-        console.error('[Webhook] Failed to forward payload:', webhookErr);
+        console.error('[Google Sheet / Webhook] Failed to forward payload:', webhookErr);
       }
     }
 

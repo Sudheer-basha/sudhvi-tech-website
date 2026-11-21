@@ -147,6 +147,18 @@ export default function Enroll() {
       return;
     }
 
+    // Detect if running in local development or preview server
+    const isDev =
+      typeof window !== 'undefined' &&
+      (window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1' ||
+        window.location.hostname === '::1' ||
+        window.location.hostname.endsWith('.local') ||
+        window.location.hostname.startsWith('192.168.') ||
+        window.location.hostname.startsWith('10.') ||
+        window.location.hostname.startsWith('172.') ||
+        window.location.port !== '');
+
     try {
       const payload: Record<string, string> = {
         'form-name': 'enrollment',
@@ -166,6 +178,21 @@ export default function Enroll() {
         additionalNotes: step3Data.additionalNotes || 'None',
       };
 
+      // Optional direct Google Sheet & Email Webhook Sync (triggers row append + instant email to ksudheerbasha@gmail.com)
+      const googleSheetUrl = import.meta.env.VITE_GOOGLE_SHEET_URL;
+      if (googleSheetUrl) {
+        try {
+          await fetch(googleSheetUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+        } catch (sheetErr) {
+          console.warn('Google Sheet sync note:', sheetErr);
+        }
+      }
+
       const response = await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -176,7 +203,7 @@ export default function Enroll() {
         setIsLiveCaptured(true);
         setSubmitted(true);
       } else {
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        if (isDev) {
           setIsLiveCaptured(false);
           setSubmitted(true);
         } else {
@@ -184,7 +211,7 @@ export default function Enroll() {
         }
       }
     } catch (err: unknown) {
-      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      if (isDev) {
         setIsLiveCaptured(false);
         setSubmitted(true);
       } else {
@@ -332,13 +359,33 @@ export default function Enroll() {
             </div>
           </div>
 
-          {/* Submission Failure Alert */}
+          {/* Submission Failure Alert with Direct 1-Click Fallback */}
           {submissionError && (
-            <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-2xl text-xs sm:text-sm text-red-800 font-body flex items-start gap-3">
-              <span className="text-base shrink-0">⚠️</span>
-              <div>
-                <p className="font-semibold font-heading mb-0.5">Registration Error</p>
-                <p>{submissionError}</p>
+            <div className="mb-8 p-4 sm:p-5 bg-red-50 border border-red-200 rounded-2xl text-xs sm:text-sm text-red-900 font-body space-y-3">
+              <div className="flex items-start gap-3">
+                <span className="text-xl shrink-0" aria-hidden="true">⚠️</span>
+                <div>
+                  <p className="font-semibold font-heading text-red-950 mb-0.5">Registration Error</p>
+                  <p className="text-red-800 leading-relaxed">{submissionError}</p>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-red-200/60">
+                <a
+                  href={`https://wa.me/917093642973?text=${encodeURIComponent(
+                    `Hi SUDHVI TECH Admissions Desk, I would like to register for a program:\nCandidate Name: ${step1Data?.fullName || 'Prospective Student'}\nPhone: ${step1Data?.phone || 'N/A'}\nEmail: ${step1Data?.email || 'N/A'}\nTarget Course: ${step2Data?.course || 'General'}\nCollege: ${step1Data?.college || 'N/A'}\nPlease assist with my enrollment.`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium text-xs transition-colors shadow-sm"
+                >
+                  <span>💬 Complete Registration on WhatsApp (+91 7093642973)</span>
+                </a>
+                <a
+                  href="tel:+917093642973"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-800 rounded-xl font-medium text-xs transition-colors shadow-sm"
+                >
+                  <span>📞 Call Admissions 7093642973</span>
+                </a>
               </div>
             </div>
           )}
