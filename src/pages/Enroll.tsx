@@ -178,14 +178,17 @@ export default function Enroll() {
         additionalNotes: step3Data.additionalNotes || 'None',
       };
 
-      // 1. Optional direct Google Sheet & Email Webhook Sync (triggers row append + instant email to ksudheerbasha@gmail.com)
-      const googleSheetUrl = import.meta.env.VITE_GOOGLE_SHEET_URL;
+      // 1. Direct Google Sheet & Instant Email Webhook Sync (triggers row append + instant email to ksudheerbasha@gmail.com)
+      const googleSheetUrl =
+        import.meta.env.VITE_GOOGLE_SHEET_URL ||
+        'https://script.google.com/macros/s/AKfycbyqAUQ9M8ZtJ48hzea2IeWrt4Aa3-OxMgeWW41REx6C_StwgJWdMDbFqd_vKHODgvcWMA/exec';
+
       if (googleSheetUrl) {
         try {
           await fetch(googleSheetUrl, {
             method: 'POST',
             mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(payload),
           });
         } catch (sheetErr) {
